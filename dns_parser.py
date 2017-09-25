@@ -9,7 +9,7 @@ class Parser(object):
             default_suffix = '.' + default_suffix
         self.default_suffix = default_suffix
         self.comment_string = '#'
-        self.reserved_names = ['dhcp', 'reserved', 'ledig']
+        self.reserved_names = ['dhcp', 'reserved', 'ledig', 'unused']
         self.current_net = None
         self.current_net_obj = None
         self.current_ip = None
