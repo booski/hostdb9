@@ -14,6 +14,7 @@ class Hostdb9:
         if not zonedir.startswith('/'):
             zonedir = os.path.dirname(os.path.realpath(__file__)) + '/' + zonedir
         self.zonedir = zonedir
+        self.magic_names_list = myconf['magic_names'].split()
         self.quiet   = False
         self.warn    = True
         self.debug   = args.debug
@@ -32,13 +33,13 @@ class Hostdb9:
         self.client  = client.Client(conf['server'], self.warn)
         self.dhcp_restart = False
 
-    def __read_state(self):
-        parser = dns_parser.Parser(self.domain)
-        read_conf = dns_reader.read(self.client, self.warn)
+    def __read_state(self, vlans, cnames):
+        parser = dns_parser.Parser(self.domain, self.magic_names_list)
+        read_conf = dns_reader.read(self.client, vlans, cnames, self.warn)
         return parser.parse(read_conf)
 
     def __read_conf(self):
-        parser = dns_parser.Parser(self.domain)
+        parser = dns_parser.Parser(self.domain, self.magic_names_list)
         for item in os.listdir(self.zonedir):
             if item.endswith('.conf'):
                 with open(self.zonedir + item, 'r') as f:
@@ -127,7 +128,9 @@ class Hostdb9:
             if not self.quiet:
                 print('Done!')
                 print('Reading DNS state...')
-            state = self.__read_state()
+            vlans = set().union(target['hosts'].keys(),
+                                target['ranges'].keys())
+            state = self.__read_state(vlans, target['cnames'])
             if not self.quiet:
                 print('Done!')
             if self.debug:
