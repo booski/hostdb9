@@ -27,7 +27,7 @@ Switches are documented in the program itself, please run `hostdb --help` for mo
 ## DNS configuration format
 In general, the file format consists of lines consisting of a keyword followed by a value. A complete definition of a DNS object will usually require several grouped lines.
 
-The file can contain comments that are ignored by the program. Any text on a line following a `#` is considered a comment.
+The file can contain comments that are ignored by the program. A comment starts with a '#' (hash) character, and ends with a newline.
 
 Whenever a hostname must be specified, a shorthand can be used: All hostnames that do not contain a '.' (period) will automatically get the default domain (as spcified by the `tld` setting in `config.ini`) appended in DNS.
 
