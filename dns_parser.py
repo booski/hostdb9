@@ -4,12 +4,12 @@ import ipaddress
 import errors
 
 class Parser(object):
-    def __init__(self, default_suffix):
+    def __init__(self, default_suffix, magic_names_list):
         if not default_suffix.startswith('.'):
             default_suffix = '.' + default_suffix
         self.default_suffix = default_suffix
         self.comment_string = '#'
-        self.reserved_names = ['dhcp', 'reserved', 'ledig', 'unused']
+        self.reserved_names = magic_names_list
         self.current_net = None
         self.current_net_obj = None
         self.current_ip = None
@@ -65,9 +65,8 @@ class Parser(object):
     def __require_unique_name(self, caller, name):
         for category, content in self.state_dict.items():
             if category == 'cnames':
-                for cname in content:
-                    if cname == name:
-                        canonical = content[cname]['canonical']
+                for canonical in content:
+                    if name in content[canonical]:
                         err_msg = name + ': This name is already an alias for ' + canonical
                         raise errors.ParserError(caller, err_msg)
             elif category == 'hosts':
